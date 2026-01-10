@@ -90,7 +90,7 @@ async def image_chat(
             chat_history[user_id] = []
 
         response = client.chat.completions.create(
-            model= "qwen/qwen-2.5-vl",
+            model= "gpt-4o-mini",
             messages=[
                 {
                     "role": "system",

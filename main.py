@@ -47,13 +47,13 @@ def chat(req: ChatRequest):
         chat_history[req.user_id].append({"role": "user", "content": req.query})
 
         if len(chat_history[req.user_id]) > 8:
-            chat_history[req.user_id] = chat_history[req.user_id][-8:]
+            chat_history[req.user_id] = chat_history[req.user_id][-4:]
 
         if not api_key:
             return {"error": "API Key not found. Please check your .env file."}
 
         response = client.chat.completions.create(
-            model="mistralai/mistral-7b-instruct",
+            model="meta-llama/llama-3-8b-instruct",
             messages=[
                 {"role": "system",
                  "content": "You are a helpful Data Structure tutor. Explain concepts with clarity, examples, and visual thinking. Use previous context if follow-up question is unclear."

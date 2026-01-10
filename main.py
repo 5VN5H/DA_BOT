@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,7 +28,7 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return FileResponse("index.html")
+    return {"status": "Backend running"}
 
 chat_history = {}
 
@@ -72,7 +72,10 @@ def chat(req: ChatRequest):
         return {"error": str(e)}
 
 @app.post("/image-chat")
-async def image_chat(user_id: str, image: UploadFile = File(...)):
+async def image_chat(
+    user_id: str = Form(...),
+    image: UploadFile = File(...)
+):
     try:
         # Read image
         image_bytes = await image.read()
@@ -117,6 +120,6 @@ async def image_chat(user_id: str, image: UploadFile = File(...)):
     except Exception as e:
         return {"error": str(e)}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -58,7 +58,7 @@ async function sendMessage() {
         formData.append('image', file);
 
         try {
-            const response = await fetch('/image-chat', {
+            const response = await fetch(`${BACKEND_URL}/image-chat`, {
                 method: 'POST',
                 body: formData
             });
@@ -83,10 +83,13 @@ async function sendMessage() {
         chatWindow.scrollTop = chatWindow.scrollHeight;
 
         try {
-            const response = await fetch('/chat', {
+            const response = await fetch(`${BACKEND_URL}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId, query: text })
+                body: JSON.stringify({
+                    user_id: userId,
+                    query: text
+                })
             });
             const data = await response.json();
             if (data.reply) {

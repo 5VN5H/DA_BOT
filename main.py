@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import base64
+import mimetypes
 
 load_dotenv()
 
@@ -77,43 +78,50 @@ async def image_chat(
     image: UploadFile = File(...)
 ):
     try:
-        # Read image
         image_bytes = await image.read()
 
-        # Convert to base64
+        mime_type, _ = mimetypes.guess_type(image.filename)
+        if not mime_type:
+            mime_type = "image/jpeg"
+
         img_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
-        # Create chat history for image user if not exists
         if user_id not in chat_history:
             chat_history[user_id] = []
 
         response = client.chat.completions.create(
-            model="qwen/qwen-2.5-vl",
+            model= "qwen/qwen-2.5-vl",
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a Data Structure tutor. Understand diagrams, images, handwritten notes and explain clearly like a teacher."
+                    "content": "You are a Data Structure tutor. Explain diagrams clearly."
                 },
-                *chat_history[user_id],
                 {
                     "role": "user",
                     "content": [
-                        {
-                            "type": "text",
-                            "text": "Explain this image in context of data structures. Identify what it is and teach me."
-                        },
+                        {"type": "text", "text": "Explain this image related to data structures."},
                         {
                             "type": "image_url",
-                            "image_url": f"data:image/jpeg;base64,{img_base64}"
+                            "image_url": f"data:{mime_type};base64,{img_base64}"
                         }
-                    ],
+                    ]
                 }
             ]
         )
 
-        answer = response.choices[0].message.content
+        msg = response.choices[0].message
+        answer = None
 
-        chat_history[user_id].append({"role": "assistant", "content": answer})
+        if isinstance(msg.content, list):
+            for part in msg.content:
+                if part.get("type") == "text":
+                    answer = part.get("text")
+                    break
+        elif isinstance(msg.content, str):
+            answer = msg.content
+
+        if not answer:
+            return {"error": "Vision model returned no text output"}
 
         return {"reply": answer}
 

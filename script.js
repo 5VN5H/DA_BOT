@@ -2,7 +2,7 @@ const chatWindow = document.getElementById('chat-window');
 const typingIndicator = document.getElementById('typing-indicator');
 const messageInput = document.getElementById('message');
 const imageInput = document.getElementById('image_input');
-
+const BACKEND_URL = 'https://da-bot-vjpp.onrender.com';
 function handleEnter(e) {
     if (e.key === 'Enter') {
         sendMessage();

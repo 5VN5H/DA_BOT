@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.png" alt="Data Structure Tutor Chatbot Banner" width="100%">
+  <img src="b.png" alt="Data Structure Tutor Chatbot Banner" width="100%">
 </p>
 
 # DA_BOT - Data Structure Tutor
